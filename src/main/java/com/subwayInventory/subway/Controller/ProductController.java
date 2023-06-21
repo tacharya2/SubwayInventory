@@ -52,4 +52,9 @@ public class ProductController implements ProductApi{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @Override
+    public ResponseEntity<String> ping() {
+        return new ResponseEntity<>("Product Api is up and running", HttpStatus.OK);
+    }
 }

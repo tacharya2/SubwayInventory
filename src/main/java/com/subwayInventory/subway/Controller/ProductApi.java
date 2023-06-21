@@ -24,4 +24,8 @@ public interface ProductApi {
     @Operation(description = "Remove a product record", summary = "Remove a product record", tags = "Product Api")
     @DeleteMapping("/{id}")
     ResponseEntity<ProductDto> deleteProduct(@PathVariable Long id);
+
+    @Operation(summary = "Ping", tags = "Product Api")
+    @GetMapping(value = "/ping")
+    ResponseEntity<String> ping();
 }

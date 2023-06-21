@@ -13,4 +13,8 @@ public class SubwayApplication {
 		ct.getCurrentTimeStamp();
 	}
 }
-//TODO: Logging(logback), Object level test cases, Spring , Chaos Monkey, Performance Testing, Dynatrace monitoring, Kafka/sns-topic, Splunk, Deploying it dev/test in AWS
+//TODO: Logging(logback), Object level test cases, Spring Security, Chaos Monkey, Performance Testing, Dynatrace monitoring, Kafka/sns-topic, Splunk, Deploying it dev/test in AWS
+
+//Ping: http://localhost:8083/api/products/ping
+// Swagger: http://localhost:8083/swagger-ui/index.html#/
+//Actuator Health: http://localhost:8083/actuator/health
