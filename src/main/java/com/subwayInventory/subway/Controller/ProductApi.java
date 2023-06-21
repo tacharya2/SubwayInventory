@@ -13,15 +13,15 @@ public interface ProductApi {
     ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto);
 
 
-    @Operation(description = "retrieve a product record", tags = "Product Api")
+    @Operation(summary = "retrieve a product record", tags = "Product Api")
     @GetMapping("/{id}")
     ResponseEntity<ProductDto> getProductById(@PathVariable Long id);
 
-    @Operation(description = "Update a product record", tags = "Product Api")
+    @Operation(summary = "Update a product record", tags = "Product Api")
     @PutMapping("/{id}")
     ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto);
 
-    @Operation(description = "Remove a product record", tags = "Product Api")
+    @Operation(description = "Remove a product record", summary = "Remove a product record", tags = "Product Api")
     @DeleteMapping("/{id}")
     ResponseEntity<ProductDto> deleteProduct(@PathVariable Long id);
 }

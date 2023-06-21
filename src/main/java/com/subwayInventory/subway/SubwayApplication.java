@@ -13,3 +13,4 @@ public class SubwayApplication {
 		ct.getCurrentTimeStamp();
 	}
 }
+//TODO: Logging(logback), Object level test cases, Spring , Chaos Monkey, Performance Testing, Dynatrace monitoring, Kafka/sns-topic, Splunk, Deploying it dev/test in AWS

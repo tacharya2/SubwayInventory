@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 
 @OpenAPIDefinition(
         info = @Info(
-                title = "Demo-Project",
+                title = "Product API",
                 description = "This API is used to do CRUD operation of Products",
                 version = "v1",
                 contact = @Contact(name = "Tek Acharya", email = "sarmakash430@gmail.com")
@@ -15,4 +15,6 @@ import io.swagger.v3.oas.annotations.info.Info;
 public class SwaggerConfig {
 
 }
-// http://localhost:8083/swagger-ui/index.html
+//Swagger: http://localhost:8083/swagger-ui/index.html
+//Actuator Health: http://localhost:8083/actuator/health
+
