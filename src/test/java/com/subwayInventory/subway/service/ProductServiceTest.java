@@ -1,17 +1,13 @@
 package com.subwayInventory.subway.service;
 
-import com.subwayInventory.subway.Controller.ProductController;
 import com.subwayInventory.subway.exception.ProductNotFoundException;
 import com.subwayInventory.subway.model.ProductDto;
 import com.subwayInventory.subway.repository.ProductRepository;
 import com.subwayInventory.subway.repository.model.ProductEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
@@ -19,16 +15,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-//@ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
     private ProductService productService;
 
     @Mock
     private ProductRepository productRepository;
-
-    @Mock
-    private ProductController productController;
 
     @BeforeEach
     void setUp(){
@@ -37,6 +29,7 @@ class ProductServiceTest {
     }
     @Test
     void getProductById_IdExists_ReturnsProductDto() throws ProductNotFoundException {
+        // Mock productEntity
         ProductEntity productEntity = new ProductEntity();
         productEntity.setId(1L);
         productEntity.setName("Dummy");
@@ -44,26 +37,31 @@ class ProductServiceTest {
         productEntity.setCategory("Refrigerator");
         productEntity.setLocation("Aisle M");
 
+        // Mock productRepository
         when(productRepository.findById(1L)).thenReturn(Optional.of(productEntity));
 
-        ProductDto productDto = productService.getProductById(1L);
+        // Call the getProductById method
+        String traceId = "12345"; // Replace with your desired traceId value
+        ProductDto productDto = productService.getProductById(1L, traceId);
 
+        // Assertions
         assertNotNull(productDto);
         assertEquals("Dummy", productDto.getName());
         assertEquals("16.25", productDto.getPrice());
         assertEquals("Refrigerator", productDto.getCategory());
         assertEquals("Aisle M", productDto.getLocation());
     }
+
     @Test
     void createProduct_NonExistingId_ThrowsNotFoundException(){
+        String traceId = "12345";
         when(productRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThrows(ProductNotFoundException.class, ()->productService.getProductById(1L));
+        assertThrows(ProductNotFoundException.class, ()->productService.getProductById(1L, traceId));
     }
     @Test
     void createProduct_ValidProduct_ReturnCreatedProductDto(){
         //trying to insert this into the db
         ProductDto productDto = new ProductDto();
-        productDto.setId(1L);
         productDto.setName("Dummy");
         productDto.setPrice("16.25");
         productDto.setCategory("Refrigerator");
@@ -81,7 +79,8 @@ class ProductServiceTest {
 
         //we create through ProductService. so, we pass ProductDto via it.
 
-        ProductDto createdProductDto = productService.createProduct(productDto);
+        String traceId = "12345";
+        ProductDto createdProductDto = productService.createProduct(productDto, traceId);
 
         //Compare and see
         assertNotNull(createdProductDto);
@@ -95,13 +94,13 @@ class ProductServiceTest {
     @Test
     void createProduct_InvalidProduct_ThrowsIllegalArgumentException(){
         ProductDto productDto = new ProductDto();
-        productDto.setId(1L);
         productDto.setName(null); //invalid product
         productDto.setPrice("16.25");
         productDto.setCategory("Refrigerator");
         productDto.setLocation("Aisle M");
 
-        assertThrows(IllegalArgumentException.class, ()->productService.createProduct(productDto));
+        String traceId = "12345";
+        assertThrows(IllegalArgumentException.class, ()->productService.createProduct(productDto, traceId));
 
         verify(productRepository, never()).save(any(ProductEntity.class));
     }
@@ -111,7 +110,6 @@ class ProductServiceTest {
 
         //to update to
         ProductDto productDto = new ProductDto();
-        productDto.setId(1L);
         productDto.setName("Dummy");
         productDto.setPrice("16.25");
         productDto.setCategory("Refrigerator");
@@ -148,24 +146,25 @@ class ProductServiceTest {
     @Test
     //unhappy path
     void updateProduct_NonExistingId_ReturnNull(){
+        String traceId = "12345";
         ProductDto productDto = new ProductDto();
-        productDto.setId(1L);
         productDto.setName("Dummy");
         productDto.setPrice("16.25");
         productDto.setCategory("Refrigerator");
         productDto.setLocation("Aisle M");
 
-        when(productRepository.findById(1l)).thenReturn(Optional.empty());
+        when(productRepository.findById(1L)).thenReturn(Optional.empty());
 
-        ProductDto updatedProductDto = productService.updateProduct(1L, productDto);
+        ProductDto updatedProductDto = productService.updateProduct(1L, productDto, traceId);
 
         assertNull(updatedProductDto);
     }
     @Test
     void deleteProduct_ExistingId_ReturnsTrue() {
+        String traceId = "12345";
         when(productRepository.findById(1L)).thenReturn(Optional.of(new ProductEntity()));
 
-        boolean deleted = productService.deleteProduct(1L);
+        boolean deleted = productService.deleteProduct(1L, traceId);
 
         assertTrue(deleted);
 
@@ -174,9 +173,10 @@ class ProductServiceTest {
 
     @Test
     void deleteProduct_NonExistingId_ReturnsFalse(){
+        String traceId = "12345";
         when(productRepository.findById(1L)).thenReturn(Optional.empty());
 
-        boolean deleted = productService.deleteProduct(1L);
+        boolean deleted = productService.deleteProduct(1L, traceId);
 
         assertFalse(deleted);
 
