@@ -18,14 +18,15 @@ public class ProductController implements ProductApi{
     }
 
     @Override
-    public ResponseEntity<ProductDto> createProduct(ProductDto productDto) {
-        ProductDto createdProductDto = productService.createProduct(productDto);
+    public ResponseEntity<ProductDto> createProduct(ProductDto productDto, final String traceId) {
+        ProductDto createdProductDto = productService.createProduct(productDto, traceId);
         return new ResponseEntity<>(createdProductDto, HttpStatus.CREATED);
     }
 
+
     @Override
-    public ResponseEntity<ProductDto> getProductById(Long id) {
-        ProductDto productDto = productService.getProductById(id);
+    public ResponseEntity<ProductDto> getProductById(Long id, final String traceId) {
+        ProductDto productDto = productService.getProductById(id, traceId);
         if(productDto != null){
             return new ResponseEntity<>(productDto, HttpStatus.OK);
         }else{
@@ -34,8 +35,8 @@ public class ProductController implements ProductApi{
     }
 
     @Override
-    public ResponseEntity<ProductDto> updateProduct(Long id, ProductDto productDto) {
-        ProductDto updatedProductDto = productService.updateProduct(id, productDto);
+    public ResponseEntity<ProductDto> updateProduct(Long id, ProductDto productDto, final String traceId) {
+        ProductDto updatedProductDto = productService.updateProduct(id, productDto, traceId);
         if(updatedProductDto != null){
             return new ResponseEntity<>(updatedProductDto, HttpStatus.OK);
         }else{
@@ -44,9 +45,9 @@ public class ProductController implements ProductApi{
     }
 
     @Override
-    public ResponseEntity<ProductDto> deleteProduct(Long id) {
-        boolean   deletd = productService.deleteProduct(id);
-        if(deletd){
+    public ResponseEntity<ProductDto> deleteProduct(Long id, final String traceId) {
+        boolean   deleted = productService.deleteProduct(id, traceId);
+        if(deleted){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }else{
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -24,36 +24,37 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public ProductDto createProduct(ProductDto productDto){
+    public ProductDto createProduct(ProductDto productDto, String traceId){
         if(productDto.getName() == null || productDto.getName().isEmpty()){
             throw new IllegalArgumentException("Product cannot be empty");
         }else{
             ProductEntity productEntity = new ProductEntity();
-            productEntity.setId(productDto.getId());
+//            productEntity.setId(productDto.getId());
             productEntity.setName(productDto.getName());
             productEntity.setPrice(productDto.getPrice());
             productEntity.setCategory(productDto.getCategory());
             productEntity.setLocation(productDto.getLocation());
+            productEntity.setEventId(productDto.getEventId());
 
             try {
                 ProductEntity savedProductEntity = productRepository.save(productEntity);
-                logger.info("product saved successfully:  " + productDto.getName());
+                logger.info("product saved successfully:  {}, with a trace id {}", productDto.getName(), traceId);
                 return ProductMapper.toDto(savedProductEntity);
             }catch (DataIntegrityViolationException e){
-                logger.info("product {} could not be saved!", productDto.getName());
-                throw new RuntimeException("Failed to create product: " + e.getLocalizedMessage());
+                logger.info("product {} could not be saved! Trace id: {}", productDto.getName() , traceId);
+                throw new RuntimeException("Failed to create product: " + e.getLocalizedMessage() + ". Trace id: " + traceId);
             }
         }
     }
 
-    public ProductDto getProductById(Long id){
+    public ProductDto getProductById(Long id, String traceId ){
         Optional<ProductEntity> optionalProductEntity = productRepository.findById(id);
-        ProductEntity productEntity = optionalProductEntity.orElseThrow(()-> new ProductNotFoundException("Product Not found with: "+ id));
-        logger.info("product retrieved for id {}", id);
+        ProductEntity productEntity = optionalProductEntity.orElseThrow(()-> new ProductNotFoundException("Product Not found with: " + id + " Trace id" + traceId));
+        logger.info("product retrieved for id {} . Trace id: {}", id, traceId);
         return ProductMapper.toDto(productEntity);
     }
 
-    public ProductDto updateProduct(Long id, ProductDto productDto){
+    public ProductDto updateProduct(Long id, ProductDto productDto, String traceId){
         Optional<ProductEntity> optionalProductEntity = productRepository.findById(id);
         if(optionalProductEntity.isPresent()){
             ProductEntity productEntity = optionalProductEntity.get();
@@ -61,25 +62,27 @@ public class ProductService {
             productEntity.setPrice(productDto.getPrice());
             productEntity.setCategory(productDto.getCategory());
             productEntity.setLocation(productDto.getLocation());
+            //Wanted to keep same eventId for lifelong event tracking
+//            productEntity.setEventId(productDto.getEventId());
 
             ProductEntity updatedProductEntity = productRepository.save(productEntity);
-            logger.info("product updated for id {}", id);
+            logger.info("product updated for id {}. Trace id: {}", id, traceId);
             return ProductMapper.toDto(updatedProductEntity);
         }else{
-            logger.info("product with id {} does not exists", id);
+            logger.info("product with id {} does not exists. Trace Id {}", id, traceId);
             return null;
         }
     }
 
-    public boolean deleteProduct(Long id){
+    public boolean deleteProduct(Long id, String traceId){
         Optional<ProductEntity> optionalProductEntity = productRepository.findById(id);
 
         if(optionalProductEntity.isPresent()){
             productRepository.deleteById(id);
-            logger.info("product removed for id {}", id);
+            logger.info("product removed for id {}. Trace Id: {}", id, traceId);
             return true;
         }else{
-            logger.info("product with id {} does not exists", id);
+            logger.info("product with id {} does not exists. Trace Id: {}", id, traceId);
             return false;
         }
     }
