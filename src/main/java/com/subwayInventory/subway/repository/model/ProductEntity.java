@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -25,4 +26,7 @@ public class ProductEntity {
 
     @Column(name = "location")
     private String location;
+
+    @Column(name = "event_id")
+    private UUID eventId;
 }
